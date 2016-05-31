@@ -1,8 +1,11 @@
 doctype html
-html
+html(lang='ja', ng-app='novel2music')
     head
         title= title
         script(src='/lib/jquery/dist/jquery.min.js', charset='UTF-8')
+        script(src='/lib/angular/angular.min.js', charset='UTF-8')
+        script(src='/js/common.js', charset='UTF-8')
+        script(src='/js/questionnaire/userCtrl.js', charset='UTF-8')
         link(rel='stylesheet', href='/lib/bootstrap/dist/css/bootstrap.min.css')
         link(rel='stylesheet', href='/css/common.css')
     body

@@ -1,5 +1,69 @@
 extends ../layout
 
 block content
-  h1= title
-  p アンケートの回答
+    h1= title
+    p ユーザ属性調査のため、ご回答をお願い致します。
+    div(class="panel panel-default" ng-controller="userCtrl as vm" ng-init="vm.init()")
+        form(name="item" novalidate)
+            .panel-body
+                label ユーザID　
+                font(color="red") ※半角英数のみ使用可能
+                input(type="text" ng-model="vm.user.name" class="form-control" placeholder="ex) yanoo" aria-describedby="sizing-addon2" required ng-maxlength="40" ng-pattern="/^[a-zA-Z0-9]+$/")
+            .panel-body
+                label 年齢
+                input(type="text" ng-model="vm.user.age" class="form-control" placeholder="ex) 25" aria-describedby="sizing-addon2" required ng-pattern="/^[1-9][0-9]$/")
+            .panel-body
+                label 性別
+                br
+                label.radio-inline
+                    input(type="radio" ng-model="vm.user.sex" name="sex" value="m" required)
+                    | 男性
+                label.radio-inline
+                    input(type="radio" ng-model="vm.user.sex" name="sex" value="f" required)
+                    | 女性
+            .panel-body
+                label パスワード　
+                font(color="red") ※暗号化されないため、普段使っているパスワード等は使用しないでください
+                input(type="text" ng-model="vm.user.password" class="form-control" placeholder="数字4桁のみ使用可能" aria-describedby="sizing-addon2" required ng-pattern="/^[0-9]{4}$/")
+            .panel-body
+                label 趣味等で音楽活動をしたことがありますか？
+                br
+                label.radio-inline
+                    input(type="radio" ng-model="vm.user.questionnaire_1" name="questionnaire_1" value="1" required)
+                    | はい
+                label.radio-inline
+                    input(type="radio" ng-model="vm.user.questionnaire_1" name="questionnaire_1" value="0" required)
+                    | いいえ
+            .panel-body
+                label クラシック音楽を普段鑑賞しますか？
+                br
+                label.radio-inline
+                    input(type="radio" ng-model="vm.user.questionnaire_2" name="questionnaire_2" value="1" required)
+                    | はい
+                label.radio-inline
+                    input(type="radio" ng-model="vm.user.questionnaire_2" name="questionnaire_2" value="0" required)
+                    | いいえ
+            .panel-body
+                label 絶対音感、または、相対音感をお持ちですか？
+                br
+                label.radio-inline
+                    input(type="radio" ng-model="vm.user.questionnaire_3" name="questionnaire_3" value="2" required)
+                    | 絶対音感
+                label.radio-inline
+                    input(type="radio" ng-model="vm.user.questionnaire_3" name="questionnaire_3" value="1" required)
+                    | 相対音感
+                label.radio-inline
+                    input(type="radio" ng-model="vm.user.questionnaire_3" name="questionnaire_3" value="0" required)
+                    | なし
+            .panel-body
+                label 音楽理論を勉強したことがありますか？
+                br
+                label.radio-inline
+                    input(type="radio" ng-model="vm.user.questionnaire_4" name="questionnaire_4" value="1" required)
+                    | はい
+                label.radio-inline
+                    input(type="radio" ng-model="vm.user.questionnaire_4" name="questionnaire_4" value="0" required)
+                    | いいえ
+            .panel-body
+                a(class="btn btn-primary" href="#" role="button" ng-disabled="item.$invalid") 内容を確認
+    br
