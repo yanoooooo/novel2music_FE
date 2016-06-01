@@ -2,4 +2,11 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p
+    input(type="text" class="form-control" placeholder="username" style="width:50%")
+    br
+    input(type="text" class="form-control" placeholder="password" style="width:50%")
+    br
+    a(class="btn btn-primary" href="#" role="button") submit
+  p
+    a(href="/questionnaire/user") 新規登録はこちら
