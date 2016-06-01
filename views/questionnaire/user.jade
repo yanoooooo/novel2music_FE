@@ -80,8 +80,8 @@ block content
                 p(ng-if="vm.is_confirm && vm.user.questionnaire_4 == '1'") はい
                 p(ng-if="vm.is_confirm && vm.user.questionnaire_4 == '0'") いいえ
             .panel-body
-                a(class="btn btn-primary" href="#" role="button" ng-if="!vm.is_confirm" ng-click="vm.is_confirm =! vm.is_confirm" ng-disabled="item.$invalid") 内容を確認
-                a(class="btn btn-primary" href="#" role="button" ng-if="vm.is_confirm" ng-click="vm.is_confirm =! vm.is_confirm" ng-disabled="vm.is_double") 戻る
+                button(class="btn btn-primary" href="#" role="button" ng-if="!vm.is_confirm" ng-click="vm.is_confirm =! vm.is_confirm" ng-disabled="item.$invalid") 内容を確認
+                button(class="btn btn-primary" href="#" role="button" ng-if="vm.is_confirm" ng-click="vm.is_confirm =! vm.is_confirm" ng-disabled="vm.is_double") 戻る
                 |　
-                a(class="btn btn-primary" role="button" ng-if="vm.is_confirm" ng-click="vm.post(); vm.is_double =! vm.is_double" ng-disabled="vm.is_double") 登録
+                button(class="btn btn-primary" role="button" ng-if="vm.is_confirm" ng-click="vm.post(); vm.is_double =! vm.is_double" ng-disabled="vm.is_double") 登録
     br
