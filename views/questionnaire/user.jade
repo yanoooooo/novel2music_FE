@@ -4,66 +4,84 @@ block content
     h1= title
     p ユーザ属性調査のため、ご回答をお願い致します。
     div(class="panel panel-default" ng-controller="userCtrl as vm" ng-init="vm.init()")
+        include ../result.jade
         form(name="item" novalidate)
             .panel-body
                 label ユーザID　
                 font(color="red") ※半角英数のみ使用可能
-                input(type="text" ng-model="vm.user.name" class="form-control" placeholder="ex) yanoo" aria-describedby="sizing-addon2" required ng-maxlength="40" ng-pattern="/^[a-zA-Z0-9]+$/")
+                input(ng-if="!vm.is_confirm" type="text" ng-model="vm.user.name" class="form-control" placeholder="ex) yanoo" aria-describedby="sizing-addon2" required ng-maxlength="40" ng-pattern="/^[a-zA-Z0-9]+$/")
+                p(ng-if="vm.is_confirm") {{vm.user.name}}
             .panel-body
                 label 年齢
-                input(type="text" ng-model="vm.user.age" class="form-control" placeholder="ex) 25" aria-describedby="sizing-addon2" required ng-pattern="/^[1-9][0-9]$/")
+                input(ng-if="!vm.is_confirm" type="text" ng-model="vm.user.age" class="form-control" placeholder="ex) 25" aria-describedby="sizing-addon2" required ng-pattern="/^[1-9][0-9]$/")
+                p(ng-if="vm.is_confirm") {{vm.user.age}}
             .panel-body
                 label 性別
                 br
-                label.radio-inline
+                label.radio-inline(ng-if="!vm.is_confirm")
                     input(type="radio" ng-model="vm.user.sex" name="sex" value="m" required)
                     | 男性
-                label.radio-inline
+                label.radio-inline(ng-if="!vm.is_confirm")
                     input(type="radio" ng-model="vm.user.sex" name="sex" value="f" required)
                     | 女性
+                p(ng-if="vm.is_confirm && vm.user.sex == 'm'") 男性
+                p(ng-if="vm.is_confirm && vm.user.sex == 'f'") 女性
             .panel-body
                 label パスワード　
                 font(color="red") ※暗号化されないため、普段使っているパスワード等は使用しないでください
-                input(type="text" ng-model="vm.user.password" class="form-control" placeholder="数字4桁のみ使用可能" aria-describedby="sizing-addon2" required ng-pattern="/^[0-9]{4}$/")
+                input(ng-if="!vm.is_confirm" type="text" ng-model="vm.user.password" class="form-control" placeholder="数字4桁のみ使用可能" aria-describedby="sizing-addon2" required ng-pattern="/^[0-9]{4}$/")
+                p(ng-if="vm.is_confirm") {{vm.user.password}}
             .panel-body
                 label 趣味等で音楽活動をしたことがありますか？
                 br
-                label.radio-inline
+                label.radio-inline(ng-if="!vm.is_confirm")
                     input(type="radio" ng-model="vm.user.questionnaire_1" name="questionnaire_1" value="1" required)
                     | はい
-                label.radio-inline
+                label.radio-inline(ng-if="!vm.is_confirm")
                     input(type="radio" ng-model="vm.user.questionnaire_1" name="questionnaire_1" value="0" required)
                     | いいえ
+                p(ng-if="vm.is_confirm && vm.user.questionnaire_1 == '1'") はい
+                p(ng-if="vm.is_confirm && vm.user.questionnaire_1 == '0'") いいえ
             .panel-body
                 label クラシック音楽を普段鑑賞しますか？
                 br
-                label.radio-inline
+                label.radio-inline(ng-if="!vm.is_confirm")
                     input(type="radio" ng-model="vm.user.questionnaire_2" name="questionnaire_2" value="1" required)
                     | はい
-                label.radio-inline
+                label.radio-inline(ng-if="!vm.is_confirm")
                     input(type="radio" ng-model="vm.user.questionnaire_2" name="questionnaire_2" value="0" required)
                     | いいえ
+                p(ng-if="vm.is_confirm && vm.user.questionnaire_2 == '1'") はい
+                p(ng-if="vm.is_confirm && vm.user.questionnaire_2 == '0'") いいえ
             .panel-body
                 label 絶対音感、または、相対音感をお持ちですか？
                 br
-                label.radio-inline
+                label.radio-inline(ng-if="!vm.is_confirm")
                     input(type="radio" ng-model="vm.user.questionnaire_3" name="questionnaire_3" value="2" required)
                     | 絶対音感
-                label.radio-inline
+                label.radio-inline(ng-if="!vm.is_confirm")
                     input(type="radio" ng-model="vm.user.questionnaire_3" name="questionnaire_3" value="1" required)
                     | 相対音感
-                label.radio-inline
+                label.radio-inline(ng-if="!vm.is_confirm")
                     input(type="radio" ng-model="vm.user.questionnaire_3" name="questionnaire_3" value="0" required)
                     | なし
+                p(ng-if="vm.is_confirm && vm.user.questionnaire_3 == '2'") 絶対音感
+                p(ng-if="vm.is_confirm && vm.user.questionnaire_3 == '1'") 相対音感
+                p(ng-if="vm.is_confirm && vm.user.questionnaire_3 == '0'") なし
             .panel-body
                 label 音楽理論を勉強したことがありますか？
                 br
-                label.radio-inline
+                label.radio-inline(ng-if="!vm.is_confirm")
                     input(type="radio" ng-model="vm.user.questionnaire_4" name="questionnaire_4" value="1" required)
                     | はい
-                label.radio-inline
+                label.radio-inline(ng-if="!vm.is_confirm")
                     input(type="radio" ng-model="vm.user.questionnaire_4" name="questionnaire_4" value="0" required)
                     | いいえ
+                p(ng-if="vm.is_confirm && vm.user.questionnaire_4 == '1'") はい
+                p(ng-if="vm.is_confirm && vm.user.questionnaire_4 == '0'") いいえ
             .panel-body
-                a(class="btn btn-primary" href="#" role="button" ng-disabled="item.$invalid") 内容を確認
+                a(class="btn btn-primary" href="#" role="button" ng-if="!vm.is_confirm" ng-click="vm.is_confirm =! vm.is_confirm" ng-disabled="item.$invalid") 内容を確認
+                a(class="btn btn-primary" href="#" role="button" ng-if="vm.is_confirm" ng-click="vm.is_confirm =! vm.is_confirm" ng-disabled="vm.is_double") 戻る
+                |　
+                a(class="btn btn-primary" role="button" ng-if="vm.is_confirm" ng-click="vm.post(); vm.is_double =! vm.is_double" ng-disabled="vm.is_double") 登録
     br
