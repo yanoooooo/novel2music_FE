@@ -1,7 +1,31 @@
 doctype html
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/css/common.css')
-  body
-    block content
+html(lang='ja', ng-app='novel2music')
+    head
+        title= title
+        script(src='/lib/jquery/dist/jquery.min.js', charset='UTF-8')
+        script(src='/lib/angular/angular.min.js', charset='UTF-8')
+        script(src='/js/common.js', charset='UTF-8')
+        script(src='/js/crudPrvd.js', charset='UTF-8')
+        script(src='/js/resultPrvd.js', charset='UTF-8')
+        script(src='/js/questionnaire/userCtrl.js', charset='UTF-8')
+        link(rel='stylesheet', href='/lib/bootstrap/dist/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/css/common.css')
+    body
+        block nav
+            nav(class="navbar navbar-default navbar-fixed-top")
+                .container
+                    p(class="navbar-text navbar-right") Signed in as unknown
+                    a(class="navbar-brand" href="#") Novel2Music
+                    div(id="navbar" class="navbar-collapse collapse" style="padding-top:7px")
+                        ul(class="nav nav-pills")
+                            li(role="presentation")
+                                a(href="/") Questionnaire
+                            li(role="presentation" class="disabled")
+                                a(href="#") Result
+                            li(role="presentation" class="disabled")
+                                a(href="#") Novel
+                            li(role="presentation" class="disabled")
+                                a(href="#") Music
+                            li(role="presentation" class="disabled")
+                                a(href="#") Automation
+        block content
