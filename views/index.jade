@@ -3,7 +3,7 @@ extends layout
 block content
   h1= title
   div(ng-controller="indexCtrl as vm" ng-init="vm.init()")
-    include ./result.jade
+    include ./module/result.jade
     p
       form(method="POST" action="/" name="item" novalidate id="post_reload")
         input(type="text" name="name" ng-model="vm.login.name" class="form-control" placeholder="username" style="width:50%" ng-pattern="/^[a-zA-Z0-9]+$/" required)

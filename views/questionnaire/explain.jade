@@ -2,3 +2,16 @@ extends ../layout
 
 block content
     h1= title
+    div(class="panel panel-default")
+        div(class="panel-body")
+            | 表示される物語を読み、その内容に最適だと思う音楽を選択してください。
+            br
+            | フッターに表示されているパネルから、音楽を選択できます。
+            br
+            | 音楽を決定するには、【音階】【拍子】【リズム】の順番に、３回選ぶ必要があります。
+            br
+            | ここでは、全ての音楽を試聴できます。
+            br
+            br
+            button(class="btn btn-primary" href="#" role="button") 始める
+    include ../module/music.jade

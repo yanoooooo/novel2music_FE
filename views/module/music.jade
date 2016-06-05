@@ -1,0 +1,12 @@
+nav(class="navbar navbar-inverse navbar-fixed-bottom" id="music_panel" ng-controller="musicCtrl as vm" ng-init="vm.init()")
+    .container-fluid
+        .navbar-brand
+            span(class="glyphicon glyphicon-music" style="color:gray;" aria-hidden="true")
+        div(id="navbar" class="navbar-collapse collapse" style="padding-top:15px")
+            ul(class="nav nav-pills")
+                li(ng-repeat="scale in vm.scale")
+                    label.radio-inline
+                        input(type="radio" name="scale" ng-value="scale.id")
+                        {{scale.name}}　
+                li(role="presentation")
+                    button(class="btn btn-primary btn-xs" href="#" role="button") 拍子選択

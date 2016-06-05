@@ -1,12 +1,21 @@
-angular.module("novel2music").controller('indexCtrl', function userCtrl(common, crudPrvd, resultPrvd) {
+angular.module("novel2music").controller('musicCtrl', function musicCtrl(common, crudPrvd) {
     var vm = this;
 
     vm.init = function() {
-        vm.login = {};
-        vm.login.id = "0";
+        vm.scale = {};
+        var url = common.API_HOST + common.API_SCALE;
+        var promise = crudPrvd.get(url);
+        var successCallback = function(response) {
+            vm.scale = response.data.datas;
+            console.dir(vm.scale);
+        };
+        var errorCallback = function(response) {
+            console.dir(response);
+        };
+        promise.then(successCallback, errorCallback);
     };
 
-    vm.post = function() {
+    /*vm.post = function() {
         var url = common.API_HOST + common.API_LOGIN +"?name="+ vm.login.name+ "&password=" +vm.login.password;
         var promise = crudPrvd.get(url);
         var successCallback = function(response) {
@@ -29,5 +38,5 @@ angular.module("novel2music").controller('indexCtrl', function userCtrl(common, 
             resultPrvd.showFaild(vm, sentence);
         };
         promise.then(successCallback, errorCallback);
-    };
+    };*/
 });
