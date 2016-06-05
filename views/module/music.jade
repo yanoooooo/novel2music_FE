@@ -3,10 +3,11 @@ nav(class="navbar navbar-inverse navbar-fixed-bottom" id="music_panel" ng-contro
         .navbar-brand
             span(class="glyphicon glyphicon-music" style="color:gray;" aria-hidden="true")
         div(id="navbar" class="navbar-collapse collapse" style="padding-top:15px")
+            audio(src="{{vm.now_playing}}" autoplay loop)
             ul(class="nav nav-pills")
                 li(ng-repeat="scale in vm.scale")
                     label.radio-inline
-                        input(type="radio" name="scale" ng-value="scale.id")
+                        input(type="radio" name="scale" ng-value="scale.id" ng-click="vm.selectScale(scale.id)")
                         {{scale.name}}　
                 li(role="presentation")
                     button(class="btn btn-primary btn-xs" href="#" role="button") 拍子選択
