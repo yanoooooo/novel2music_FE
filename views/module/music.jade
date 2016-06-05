@@ -4,10 +4,17 @@ nav(class="navbar navbar-inverse navbar-fixed-bottom" id="music_panel" ng-contro
             span(class="glyphicon glyphicon-music" style="color:gray;" aria-hidden="true")
         div(id="navbar" class="navbar-collapse collapse" style="padding-top:15px")
             audio(src="{{vm.now_playing}}" autoplay loop)
-            ul(class="nav nav-pills")
+            //音階の選択
+            ul(class="nav nav-pills" ng-show="vm.state==0")
                 li(ng-repeat="scale in vm.scale")
                     label.radio-inline
                         input(type="radio" name="scale" ng-value="scale.id" ng-click="vm.selectScale(scale.id)")
                         {{scale.name}}　
                 li(role="presentation")
-                    button(class="btn btn-primary btn-xs" href="#" role="button") 拍子選択
+                    button(class="btn btn-primary btn-xs" href="#" role="button" ng-click="vm.state=vm.state+1") 次へ
+            //拍子の選択
+            ul(class="nav nav-pills" ng-show="vm.state==1")
+                li(role="presentation")
+                    button(class="btn btn-primary btn-xs" href="#" role="button" ng-click="vm.state=vm.state-1") 戻る
+                li(role="presentation")
+                    button(class="btn btn-primary btn-xs" href="#" role="button" ng-click="vm.state=vm.state+1") 次へ

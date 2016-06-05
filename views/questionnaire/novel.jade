@@ -1,5 +1,13 @@
 extends ../layout
 
 block content
-    h1= title
-    p= id
+    div(ng-controller="novelCtrl as vm" ng-init="vm.init(#{id})")
+        h1 {{vm.novel.title}} {{vm.music_id}}
+        p
+            b authored by {{vm.novel.author_name}}
+        p(ng-bind-html="vm.novel.paragraph[vm.paragraph_num-1].sentence")
+        br
+        br
+        br
+        br
+    include ../module/music.jade
