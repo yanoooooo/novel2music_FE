@@ -7,6 +7,7 @@ html(lang='ja', ng-app='novel2music')
         script(src='/js/common.js', charset='UTF-8')
         script(src='/js/crudPrvd.js', charset='UTF-8')
         script(src='/js/resultPrvd.js', charset='UTF-8')
+        script(src='/js/indexCtrl.js', charset='UTF-8')
         script(src='/js/questionnaire/userCtrl.js', charset='UTF-8')
         link(rel='stylesheet', href='/lib/bootstrap/dist/css/bootstrap.min.css')
         link(rel='stylesheet', href='/css/common.css')
@@ -14,12 +15,13 @@ html(lang='ja', ng-app='novel2music')
         block nav
             nav(class="navbar navbar-default navbar-fixed-top")
                 .container
-                    p(class="navbar-text navbar-right") Signed in as unknown
+                    p(class="navbar-text navbar-right") Signed in as 
+                        b= user
                     a(class="navbar-brand" href="#") Novel2Music
                     div(id="navbar" class="navbar-collapse collapse" style="padding-top:7px")
                         ul(class="nav nav-pills")
                             li(role="presentation")
-                                a(href="/") Questionnaire
+                                a(href="/questionnaire/explain") Questionnaire
                             li(role="presentation" class="disabled")
                                 a(href="#") Result
                             li(role="presentation" class="disabled")
