@@ -15,7 +15,7 @@ angular.module("novel2music").provider('resultPrvd', function() {
                 vm.sentence = sentence;
                 $timeout(function() {
                     //$document.getElementById('postReload').submit();
-                    angular.element('#postReload').submit();
+                    angular.element('#post_reload').submit();
                 }, 2000);
             },
             showFaild: function(vm, sentence) {
