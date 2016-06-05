@@ -1,9 +1,16 @@
-angular.module("novel2music").controller('musicCtrl', function musicCtrl(common, crudPrvd) {
+angular.module("novel2music").factory("SharedStateService", function() {
+    return {
+        music_id: 0
+    };
+});
+
+angular.module("novel2music").controller('musicCtrl', function musicCtrl(common, crudPrvd, SharedStateService) {
     var vm = this;
 
     vm.init = function() {
         vm.scale = {};
         vm.music = {};
+        vm.state = 0;
         vm.now_playing = "";
         var url = [];
         url.push(common.API_HOST + common.API_SCALE);
@@ -25,6 +32,7 @@ angular.module("novel2music").controller('musicCtrl', function musicCtrl(common,
             if(item.scale_id == scale_id && item.time_id == 1) return true;
         });
         vm.now_playing = row[0].file_path;
+        SharedStateService.music_id = row[0].id;
     };
 
     /*vm.post = function() {

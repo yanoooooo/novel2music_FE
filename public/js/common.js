@@ -1,4 +1,4 @@
-angular.module("novel2music", []).value(
+angular.module("novel2music", ['ngSanitize']).value(
     'common',{
         'API_HOST' : 'http://localhost:2800',
         'API_USER' : '/v1/user/',
