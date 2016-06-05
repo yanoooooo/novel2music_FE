@@ -4,7 +4,7 @@ block content
     h1= title
     p ユーザ属性調査のため、ご回答をお願い致します。
     div(class="panel panel-default" ng-controller="userCtrl as vm" ng-init="vm.init()")
-        include ../result.jade
+        include ../module/result.jade
         form(name="item" novalidate)
             .panel-body
                 label ユーザID　
