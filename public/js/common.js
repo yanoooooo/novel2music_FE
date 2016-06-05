@@ -4,5 +4,7 @@ angular.module("novel2music", []).value(
         'API_USER' : '/v1/user/',
         'API_LOGIN' : '/v1/login/',
         'API_SCALE' : '/v1/scale/',
+        'API_MUSIC' : '/v1/music/',
+        'API_NOVEL' : '/v1/novel/',
     }
 );
