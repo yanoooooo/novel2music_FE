@@ -2,11 +2,15 @@ extends layout
 
 block content
   h1= title
-  p
-    input(type="text" class="form-control" placeholder="username" style="width:50%")
-    br
-    input(type="text" class="form-control" placeholder="password" style="width:50%")
-    br
-    a(class="btn btn-primary" href="#" role="button") submit
-  p
-    a(href="/questionnaire/user") 新規登録はこちら
+  div(ng-controller="indexCtrl as vm" ng-init="vm.init()")
+    include ./result.jade
+    p
+      form(method="POST" action="/" name="item" novalidate id="post_reload")
+        input(type="text" name="name" ng-model="vm.login.name" class="form-control" placeholder="username" style="width:50%" ng-pattern="/^[a-zA-Z0-9]+$/" required)
+        br
+        input(type="text" name="passowrd" ng-model="vm.login.password" class="form-control" placeholder="password" style="width:50%" ng-pattern="/^[0-9]{4}$/" required)
+        br
+        //input(type="text" name="id" ng-model="vm.login.id" value="{{vm.login.id}}")
+      button(class="btn btn-primary" role="button" ng-click="vm.post();" ng-disabled="item.$invalid") submit
+    p
+      a(href="/user") 新規登録はこちら
