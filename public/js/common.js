@@ -4,6 +4,8 @@ angular.module("novel2music", ['ngSanitize']).value(
         'API_USER' : '/v1/user/',
         'API_LOGIN' : '/v1/login/',
         'API_SCALE' : '/v1/scale/',
+        'API_TIME' : '/v1/time/',
+        'API_RHYTHM' : '/v1/rhythm/',
         'API_MUSIC' : '/v1/music/',
         'API_NOVEL' : '/v1/novel/',
     }

@@ -14,7 +14,21 @@ nav(class="navbar navbar-inverse navbar-fixed-bottom" id="music_panel" ng-contro
                     button(class="btn btn-primary btn-xs" href="#" role="button" ng-click="vm.state=vm.state+1") 次へ
             //拍子の選択
             ul(class="nav nav-pills" ng-show="vm.state==1")
+                li(ng-repeat="time in vm.time")
+                    label.radio-inline
+                        input(type="radio" class="time" name="time" ng-value="time.id" ng-click="vm.selectTime(time.id)")
+                        {{time.name}}　
                 li(role="presentation")
-                    button(class="btn btn-primary btn-xs" href="#" role="button" ng-click="vm.state=vm.state-1") 戻る
+                    button(class="btn btn-primary btn-xs" href="#" role="button" ng-click="vm.state=vm.state-1; vm.checkReset('.time')") 戻る
                 li(role="presentation")
                     button(class="btn btn-primary btn-xs" href="#" role="button" ng-click="vm.state=vm.state+1") 次へ
+            //リズムの選択
+            ul(class="nav nav-pills" ng-show="vm.state==2")
+                li(ng-repeat="rhythm in vm.rhythm")
+                    label.radio-inline
+                        input(type="radio" class="rhythm" name="rhythm" ng-value="rhythm.id" ng-click="vm.selectTime(rhythm.id)")
+                        {{rhythm.name}}　
+                li(role="presentation")
+                    button(class="btn btn-primary btn-xs" href="#" role="button" ng-click="vm.state=vm.state-1; vm.checkReset('.rhythm')") 戻る
+                li(role="presentation")
+                    button(class="btn btn-primary btn-xs" href="#" role="button" ng-click="vm.state=vm.state+1") 決定

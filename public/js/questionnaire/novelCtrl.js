@@ -9,7 +9,7 @@ angular.module("novel2music").controller('novelCtrl', function novelCtrl($scope,
         var promise = crudPrvd.get(url);
         var successCallback = function(response) {
             vm.novel = response.data.datas[0];
-            console.dir(vm.novel);
+            //console.dir(vm.novel);
         };
         var errorCallback = function(response) {
             console.dir(response);
