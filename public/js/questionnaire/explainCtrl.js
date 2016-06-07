@@ -3,6 +3,7 @@ angular.module("novel2music").controller('explainCtrl', function explainCtrl(com
 
     vm.init = function() {
         vm.novel = {};
+
         var url = common.API_HOST + common.API_NOVEL;
         var promise = crudPrvd.get(url);
         var successCallback = function(response) {
