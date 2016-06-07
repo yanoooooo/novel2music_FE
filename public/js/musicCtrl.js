@@ -71,6 +71,7 @@ angular.module("novel2music").controller('musicCtrl', function musicCtrl(common,
     };
 
     vm.decidedMusic = function() {
+        vm.now_playing = "";
         SharedStateService.datas.push(SharedStateService.relation_novel_music);
         $(".scale").attr("checked", false);
         $(".time").attr("checked", false);
@@ -79,7 +80,7 @@ angular.module("novel2music").controller('musicCtrl', function musicCtrl(common,
         vm.rhythm_disabled = false;
         vm.state = 0;
         SharedStateService.relation_novel_music = {};
-        console.dir(SharedStateService.datas);
+        //console.dir(SharedStateService.datas);
         SharedStateService.decided = true;
     };
     
