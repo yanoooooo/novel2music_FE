@@ -1,0 +1,44 @@
+extends ../layout
+
+block content
+    div(ng-controller="termCtrl as vm" ng-init="vm.init(#{id}, '#{user}')")
+        div(ng-show="!vm.is_confirm")
+            audio(src="{{vm.now_playing}}" autoplay loop)
+            h1 {{vm.novel.title}}
+            p
+                b authored by {{vm.novel.author_name}}
+            p
+                | 現在、再生されている音楽は、あなたが段落ごとに選択した音楽です。
+                br
+                | 再生されている音楽を聞いて、連想する単語を選択してください(複数選択可)
+            div(class="panel panel-default")
+                div(class="panel-body" style="padding:2%;")
+                    ul(class="nav nav-pills")
+                        li(ng-repeat="term in vm.term" style="padding:1%")
+                            label.radio-inline
+                                input(type="checkbox" name="term" ng-click="vm.clickCheckbox(term.id)" required)
+                                |　{{term.term}}
+            button(class="btn btn-primary" href="#" role="button" ng-click="vm.nextParagraph()") 次へ
+    //div(ng-controller="termCtrl as vm" ng-init="vm.init(#{id})")
+        div(ng-show="!vm.is_confirm")
+            h1 {{vm.novel.title}}
+            {{vm.music_id}} {{vm.relation_novel_music}}
+            p
+                b authored by {{vm.novel.author_name}}
+            p(ng-bind-html="vm.novel.paragraph[vm.paragraph_num-1].sentence")
+            br
+            button(class="btn btn-warning" role="button" ng-show="vm.paragraph_num-1!=0" ng-click="vm.return(0)") 前の段落に戻る
+            br
+            br
+            br
+            br
+            include ../module/music.jade
+        div(ng-show="vm.is_confirm")
+            include ../module/result.jade
+            h1 {{vm.novel.title}}
+            p
+                b authored by {{vm.novel.author_name}}
+            p 回答を終了してよろしいですか？
+            button(class="btn btn-primary" role="button" ng-click="vm.is_confirm=false; vm.return(1);" ng-disabled="item.$invalid") 戻る
+            |　
+            button(class="btn btn-primary" role="button" ng-click="vm.post('#{user}');" ng-disabled="item.$invalid") はい
