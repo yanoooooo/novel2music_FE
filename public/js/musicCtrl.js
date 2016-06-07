@@ -1,6 +1,8 @@
 angular.module("novel2music").factory("SharedStateService", function() {
     return {
-        music_id: 0
+        relation_novel_music: {},
+        datas: [],
+        decided: false
     };
 });
 
@@ -36,6 +38,8 @@ angular.module("novel2music").controller('musicCtrl', function musicCtrl(common,
 
     vm.checkReset = function(mod) {
         $(mod).attr("checked", false);
+        vm.time_disabled = false;
+        vm.rhythm_disabled = false;
     };
 
     vm.selectScale = function(scale_id) {
@@ -44,7 +48,7 @@ angular.module("novel2music").controller('musicCtrl', function musicCtrl(common,
         });
         vm.now_playing = row[0].file_path;
         vm.select_music.scale = row[0].scale_id;
-        SharedStateService.music_id = row[0].id;
+        SharedStateService.relation_novel_music.music_id = row[0].id;
     };
 
     vm.selectTime = function(time_id) {
@@ -54,7 +58,29 @@ angular.module("novel2music").controller('musicCtrl', function musicCtrl(common,
         });
         vm.now_playing = row[0].file_path;
         vm.select_music.time = row[0].time_id;
-        SharedStateService.music_id = row[0].id;
+        SharedStateService.relation_novel_music.music_id = row[0].id;
+    };
+
+    vm.selectRhythm = function(rhythm_id) {
+        var row = vm.music.filter(function(item, index){
+            if(item.scale_id == vm.select_music.scale && item.time_id == vm.select_music.time && item.rhythm_id == rhythm_id) return true;
+        });
+        vm.now_playing = row[0].file_path;
+        vm.select_music.rhythm = row[0].rhythm_id;
+        SharedStateService.relation_novel_music.music_id = row[0].id;
+    };
+
+    vm.decidedMusic = function() {
+        SharedStateService.datas.push(SharedStateService.relation_novel_music);
+        SharedStateService.decided = true;
+        $(".scale").attr("checked", false);
+        $(".time").attr("checked", false);
+        $(".rhythm").attr("checked", false);
+        vm.time_disabled = false;
+        vm.rhythm_disabled = false;
+        vm.state = 0;
+        SharedStateService.relation_novel_music = {};
+        console.dir(SharedStateService.datas);
     };
     
     /*vm.post = function() {

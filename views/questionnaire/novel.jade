@@ -1,8 +1,9 @@
 extends ../layout
 
 block content
-    div(ng-controller="novelCtrl as vm" ng-init="vm.init(#{id})")
-        h1 {{vm.novel.title}} {{vm.music_id}}
+    div(ng-show="!vm.is_confirm" ng-controller="novelCtrl as vm" ng-init="vm.init(#{id})")
+        h1 {{vm.novel.title}}
+        //{{vm.music_id}} {{vm.relation_novel_music}}
         p
             b authored by {{vm.novel.author_name}}
         p(ng-bind-html="vm.novel.paragraph[vm.paragraph_num-1].sentence")
@@ -10,4 +11,5 @@ block content
         br
         br
         br
-    include ../module/music.jade
+        div(ng-show="!vm.is_confirm")
+            include ../module/music.jade
