@@ -1,15 +1,25 @@
 extends ../layout
 
 block content
-    div(ng-show="!vm.is_confirm" ng-controller="novelCtrl as vm" ng-init="vm.init(#{id})")
-        h1 {{vm.novel.title}}
-        //{{vm.music_id}} {{vm.relation_novel_music}}
-        p
-            b authored by {{vm.novel.author_name}}
-        p(ng-bind-html="vm.novel.paragraph[vm.paragraph_num-1].sentence")
-        br
-        br
-        br
-        br
-        div(ng-show="!vm.is_confirm")
+    div(ng-controller="novelCtrl as vm" ng-init="vm.init(#{id})")
+        div(ng-show="vm.is_confirm")
+            h1 {{vm.novel.title}}
+            //{{vm.music_id}} {{vm.relation_novel_music}}
+            p
+                b authored by {{vm.novel.author_name}}
+            p(ng-bind-html="vm.novel.paragraph[vm.paragraph_num-1].sentence")
+            br
+            button(class="btn btn-warning" role="button" ng-show="vm.paragraph_num-1!=0" ng-click="vm.return(vm.paragraph_num)") 前の段落に戻る
+            br
+            br
+            br
+            br
             include ../module/music.jade
+        div(ng-show="!vm.is_confirm")
+            h1 {{vm.novel.title}}
+            p
+                b authored by {{vm.novel.author_name}}
+            p 回答を終了してよろしいですか？
+            button(class="btn btn-primary" role="button" ng-click="vm.is_confirm=false" ng-disabled="item.$invalid") 戻る
+            |　
+            button(class="btn btn-primary" role="button" ng-click="vm.post();" ng-disabled="item.$invalid") はい

@@ -3,6 +3,7 @@ angular.module("novel2music").controller('novelCtrl', function novelCtrl($scope,
 
     vm.init = function(id) {
         vm.novel = {};
+        vm.confirm_datas = [];
         vm.paragraph_num = 1;
         vm.is_confirm = false;
 
@@ -18,6 +19,15 @@ angular.module("novel2music").controller('novelCtrl', function novelCtrl($scope,
         promise.then(successCallback, errorCallback);
     };
 
+    vm.return = function(number) {
+        vm.paragraph_num--;
+        SharedStateService.datas.pop();
+    };
+
+    vm.post = function() {
+        
+    };
+
     $scope.$watch(function() {
         return SharedStateService.relation_novel_music.music_id;
     }, function(){
@@ -30,13 +40,11 @@ angular.module("novel2music").controller('novelCtrl', function novelCtrl($scope,
         return SharedStateService.decided;
     }, function(){
         if(SharedStateService.decided) {
-            console.log(vm.novel.paragraph.length);
-            console.log(vm.paragraph_num);
             if(vm.paragraph_num < vm.novel.paragraph.length) {
                 vm.paragraph_num++;
                 SharedStateService.decided = false;
             } else {
-                console.log("finish");
+                //console.log("finish");
                 vm.is_confirm = true;
                 SharedStateService.decided = false;
             }
