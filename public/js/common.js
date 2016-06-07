@@ -8,6 +8,7 @@ angular.module("novel2music", ['ngSanitize']).value(
         'API_RHYTHM' : '/v1/rhythm/',
         'API_MUSIC' : '/v1/music/',
         'API_NOVEL' : '/v1/novel/',
+        'API_TERM' : '/v1/term/',
         'API_RELATION_NOVEL' : '/v1/relation/novel/',
     }
 );
