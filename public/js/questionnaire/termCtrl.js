@@ -6,6 +6,7 @@ angular.module("novel2music").controller('termCtrl', function termCtrl($scope, c
         vm.user = {};
         vm.music = [];
         vm.term = [];
+        vm.datas = [];
         vm.check_term = [];
         vm.nowplaying = "";
         vm.paragraph_num = 1;
@@ -47,17 +48,42 @@ angular.module("novel2music").controller('termCtrl', function termCtrl($scope, c
     };
 
     vm.clickCheckbox = function(id) {
-        var row = vm.check_term.filter(function(item, index){
-            if(item == id) return true;
+        var flg = vm.check_term.some(function(v, i) {
+            if(v == id) {
+                vm.check_term.splice(i, 1);
+                return true;
+            }
         });
-        if(row.length > 0) {
-            //delete vm.check_term[row[0]];
-        } else {
-            vm.check_term.push(id);
-        }
+        if(!flg) vm.check_term.push(id);
     };
 
-    vm.nextParagraph = function() {
-        console.dir(vm.check_term);
+    vm.nextParagraph = function(id) {
+        if(vm.paragraph_num < vm.novel.paragraph.length) {
+            var data = {paragraph_id: vm.paragraph_num, term_id: vm.check_term};
+            vm.datas.push(data);
+
+            vm.check_term = [];
+            vm.paragraph_num++;
+            console.dir(vm.datas);
+
+            var urls = [];
+            urls.push(common.API_HOST + common.API_TERM +"?novel_id=" +id+ "&paragraph_id=" +vm.paragraph_num);
+            urls.push(common.API_HOST + common.API_RELATION_NOVEL +"?novel_id=" +id+ "&paragraph_id=" +vm.paragraph_num+ "&user_id=" +vm.user.id);
+            var promise = crudPrvd.getArray(urls);
+            var successCallback = function(response) {
+                vm.term = response[0].data.datas;
+                var row = vm.music.filter(function(item, index){
+                    if(item.id == response[1].data.datas[0].music_id) return true;
+                });
+                //console.dir(response.data.datas[0]);
+                vm.now_playing = row[0].file_path;
+            };
+            var errorCallback = function(response) {
+                consle.dir(response);
+            };
+            promise.then(successCallback, errorCallback);
+        } else {
+            vm.is_confirm = true;
+        }
     };
 });
