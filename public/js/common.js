@@ -10,5 +10,6 @@ angular.module("novel2music", ['ngSanitize']).value(
         'API_NOVEL' : '/v1/novel/',
         'API_TERM' : '/v1/term/',
         'API_RELATION_NOVEL' : '/v1/relation/novel/',
+        'API_RELATION_TERM' : '/v1/relation/term/',
     }
 );

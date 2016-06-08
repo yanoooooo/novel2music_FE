@@ -21,6 +21,8 @@ block content
                                 input(type="checkbox" name="term" ng-click="vm.clickCheckbox(term.id)" required)
                                 //input(type="checkbox" name="term" ng-checked="vm.check_term.term.indexOf(term.id) > -1" required)
                                 |　{{term.term}}
+            button(class="btn btn-warning" role="button" ng-show="vm.paragraph_num-1!=0" ng-click="vm.return(0)") 前に戻る
+            | 　
             button(class="btn btn-primary" href="#" role="button" ng-click="vm.nextParagraph(#{id})" ng-disabled="vm.check_term.length==0") 次へ
         div(ng-show="vm.is_confirm")
             include ../module/result.jade
@@ -30,7 +32,7 @@ block content
                 p
                     b authored by {{vm.novel.author_name}}
             p 回答を終了してよろしいですか？
-            button(class="btn btn-primary" role="button" ng-click="vm.is_confirm=false;" ng-disabled="item.$invalid") 戻る
+            button(class="btn btn-primary" role="button" ng-click="vm.is_confirm=false; vm.return(1);" ng-disabled="item.$invalid") 戻る
             |　
             button(class="btn btn-primary" role="button" ng-click="vm.post();" ng-disabled="item.$invalid") はい
     //div(ng-controller="termCtrl as vm" ng-init="vm.init(#{id})")
