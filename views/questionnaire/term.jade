@@ -4,9 +4,11 @@ block content
     div(ng-controller="termCtrl as vm" ng-init="vm.init(#{id}, '#{user}')")
         div(ng-show="!vm.is_confirm")
             audio(src="{{vm.now_playing}}" autoplay loop)
-            h1 {{vm.novel.title}}
-            p
-                b authored by {{vm.novel.author_name}}
+            .page-header
+                h1 {{vm.novel.title}}
+                    small 　段落{{vm.paragraph_num}}
+                p
+                    b authored by {{vm.novel.author_name}}
             p
                 | 現在、再生されている音楽は、あなたが段落ごとに選択した音楽です。
                 br
@@ -17,8 +19,20 @@ block content
                         li(ng-repeat="term in vm.term" style="padding:1%")
                             label.radio-inline
                                 input(type="checkbox" name="term" ng-click="vm.clickCheckbox(term.id)" required)
+                                //input(type="checkbox" name="term" ng-checked="vm.check_term.term.indexOf(term.id) > -1" required)
                                 |　{{term.term}}
-            button(class="btn btn-primary" href="#" role="button" ng-click="vm.nextParagraph()") 次へ
+            button(class="btn btn-primary" href="#" role="button" ng-click="vm.nextParagraph(#{id})" ng-disabled="vm.check_term.length==0") 次へ
+        div(ng-show="vm.is_confirm")
+            include ../module/result.jade
+            .page-header
+                h1 {{vm.novel.title}}
+                    small 　段落{{vm.paragraph_num}}
+                p
+                    b authored by {{vm.novel.author_name}}
+            p 回答を終了してよろしいですか？
+            button(class="btn btn-primary" role="button" ng-click="vm.is_confirm=false;" ng-disabled="item.$invalid") 戻る
+            |　
+            button(class="btn btn-primary" role="button" ng-click="vm.post();" ng-disabled="item.$invalid") はい
     //div(ng-controller="termCtrl as vm" ng-init="vm.init(#{id})")
         div(ng-show="!vm.is_confirm")
             h1 {{vm.novel.title}}
