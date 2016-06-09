@@ -53,11 +53,10 @@ angular.module("novel2music").controller('novelCtrl', function novelCtrl($scope,
         var successCallback = function(response) {
             num++;
             if(num < data.length) {
-                
                 vm.comebackPost(data, num);
             } else {
                 var sentence = "回答の登録が完了しました";
-                resultPrvd.showResult(vm, sentence, '/');
+                resultPrvd.showResult(vm, sentence, '/questionnaire/term/'+vm.novel.id);
             }
         };
         var errorCallback = function(response) {
