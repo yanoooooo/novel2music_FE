@@ -14,4 +14,10 @@ router.get('/novel/:id', function(req, res, next) {
     res.render('questionnaire/novel', { title: '小説', user: req.session.user.name, id: req.params.id });
 });
 
+router.get('/term/:id', function(req, res, next) {
+    //console.log(req.session.user.name);
+    if(req.session.user.name === null) req.session.user.name = "unknown";
+    res.render('questionnaire/term', { title: '単語', user: req.session.user.name, id: req.params.id });
+});
+
 module.exports = router;
