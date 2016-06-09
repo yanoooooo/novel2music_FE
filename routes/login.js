@@ -3,7 +3,10 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Sign in' });
+    if(req.session.user) {
+        res.redirect('/questionnaire/explain');
+    }
+    res.render('index', { title: 'Sign in' });
 });
 
 router.post('/', function(req, res, next) {
