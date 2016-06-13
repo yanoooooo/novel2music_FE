@@ -2,7 +2,7 @@ extends ../layout
 
 block content
     h1= title
-    div(class="panel panel-default" ng-controller="explainCtrl as vm" ng-init="vm.init()")
+    div(class="panel panel-default" ng-controller="explainCtrl as vm" ng-init="vm.init('#{user}')")
         div(class="panel-body")
             | 表示される物語を読み、その内容に最適だと思う音楽を選択してください。
             | フッターに表示されているパネルから、音楽を選択できます。
@@ -27,10 +27,12 @@ block content
                     tbody
                         tr(ng-repeat="novel in vm.novel")
                             td
-                                span(class="glyphicon glyphicon-ok" style="color:green;" aria-hidden="true")
+                                span(ng-show="vm.isAnswerd(novel.id)" class="glyphicon glyphicon-ok" style="color:green;" aria-hidden="true")
                             td
                                 //a(href="/questionnaire/term/{{novel.id}}")
-                                a(href="/questionnaire/novel/{{novel.id}}")
+                                a(ng-show="!vm.isAnswerd(novel.id)" href="/questionnaire/novel/{{novel.id}}")
+                                    {{novel.title}}
+                                div(ng-show="vm.isAnswerd(novel.id)")
                                     {{novel.title}}
                             td {{novel.chronology}}
                             td {{novel.author_name}}
