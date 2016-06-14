@@ -8,7 +8,7 @@ block content
         form(name="item" novalidate)
             .panel-body
                 label ユーザID　
-                font(color="red") ※半角英数のみ使用可能
+                font(color="red") ※半角英数のみ使用可能 / 記号等の使用不可
                 input(ng-if="!vm.is_confirm" type="text" ng-model="vm.user.name" class="form-control" placeholder="ex) yanoo" aria-describedby="sizing-addon2" required ng-maxlength="40" ng-pattern="/^[a-zA-Z0-9]+$/")
                 p(ng-if="vm.is_confirm") {{vm.user.name}}
             .panel-body
