@@ -5,12 +5,13 @@ block content
         div(ng-show="!vm.is_confirm")
             .page-header
                 h1 {{vm.novel.title}}
-            //{{vm.music_id}} {{vm.relation_novel_music}}
-            p
-                b authored by {{vm.novel.author_name}}
+                p
+                    b authored by {{vm.novel.author_name}}
             p(ng-bind-html="vm.novel.paragraph[vm.paragraph_num-1].sentence")
             br
             button(class="btn btn-warning" role="button" ng-show="vm.paragraph_num-1!=0" ng-click="vm.return(0)") 前の段落に戻る
+            br
+            br
             br
             br
             br
