@@ -12,6 +12,8 @@ block content
             br
             | 音楽の試聴が終わったら、読みたい小説のタイトルを選択し、アンケートを始めてください。
             br
+            font(color="red") ※ アンケートを開始したら、回答が終わるまで、画面を閉じたり、遷移したりしないようにしてください。
+            br
             br
             div(class="panel panel-default")
                 .panel-heading
@@ -34,7 +36,11 @@ block content
                                     {{novel.title}}
                                 div(ng-show="vm.isAnswerd(novel.id)")
                                     {{novel.title}}
-                            td {{novel.chronology}}
+                            td
+                                div(ng-if="novel.chronology==0") 不明
+                                div(ng-if="novel.chronology!=0") {{novel.chronology}}
                             td {{novel.author_name}}
                             td {{novel.category_name}}
+    br
+    br
     include ../module/music.jade
