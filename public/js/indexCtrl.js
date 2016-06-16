@@ -1,5 +1,6 @@
 angular.module("novel2music").controller('indexCtrl', function userCtrl(common, crudPrvd, resultPrvd) {
     var vm = this;
+    console.log(common.API_HOST);
 
     vm.init = function() {
         vm.login = {};
