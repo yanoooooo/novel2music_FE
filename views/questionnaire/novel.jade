@@ -7,6 +7,8 @@ block content
                 h1 {{vm.novel.title}}
                 p
                     b authored by {{vm.novel.author_name}}
+            div(class="alert alert-success" role="alert")
+                    | 文章を読んで、合うと思う音楽をフッターから【音階】【拍子】【リズム】の順番に選択肢、決定を押してください。
             p(ng-bind-html="vm.novel.paragraph[vm.paragraph_num-1].sentence")
             br
             button(class="btn btn-warning" role="button" ng-show="vm.paragraph_num-1!=0" ng-click="vm.return(0)") 前の段落に戻る
