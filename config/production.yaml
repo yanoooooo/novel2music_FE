@@ -1,2 +1,2 @@
-API_HOST: 'dev-sygy-tech01.ssk.ynwm.yahoo.co.jp'
+API_HOST: 'localhost'
 PORT: 2800
