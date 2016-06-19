@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+    h1= title
+    div(class="panel panel-default" ng-controller="explainCtrl as vm" ng-init="vm.init('#{user}')")
+        div(class="panel-body")
+            div(ng-controller="resultIndexCtrl as vm" ng-init="vm.init()" class="row")
+                div(class="col-sm-2")
+                    div(class="btn-group-vertical" role="group" aria-label="side_menu")
+                        button(type="button" class="btn btn-default" ng-click="vm.selectMenu(0)") ユーザ属性
+                        button(type="button" class="btn btn-default" ng-click="vm.selectMenu(1)") 小説と音楽
+                .col-sm-10
+                    h1 {{vm.graph_title}}
+                    p {{vm.sentence}}
+                    //ユーザ
+                    div(ng-show="vm.selected==0")
+                        div(ng-repeat="heading in vm.user_heading" class="col-sm-6")
+                            .page-header
+                                h4 {{heading.title}}
+                            svg(ng-attr-id="{{heading.id}}" style="width:300; height:300;")
+                    //小説と音楽
+                    div(ng-show="vm.selected==1")

@@ -16,7 +16,7 @@ angular.module("novel2music").controller('explainCtrl', function explainCtrl(com
             var url = common.API_HOST + common.API_RELATION_NOVEL + "?user_id=" + vm.user.id;
             var promise2 = crudPrvd.get(url);
             var successCallback2 = function(response) {
-                console.dir(response);
+                //console.dir(response);
                 vm.answered_novel = response.data.datas;
             };
             var errorCallback2 = function(response) {
