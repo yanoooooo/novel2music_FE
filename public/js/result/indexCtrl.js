@@ -79,6 +79,22 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
             list.datas = [];
             if(music_num === 0) { //scale
                 list.label = vm.scales;
+                var vote = 0;
+                var group = [];
+                for(var i=0; i<list.paragraph_num; i++) {
+                    for(var j=0; j<vm.scales.length; j++) {
+                        for(var k=0; k<data.length; k++) {
+                            if(data[k].scale_id == vm.scales[j].id && data[k].paragraph_id == i+1) {
+                                vote++;
+                            }
+                        }
+                        group.push({x: vm.scales[j].id, y: vote});
+                        vote = 0;
+                    }
+                    list.datas.push(group);
+                    group = [];
+                }
+                /*list.label = vm.scales;
                 for(var i=0; i<vm.scales.length; i++) {
                     var vote = 0;
                     for(var j=0; j<list.paragraph_num; j++) {
@@ -95,21 +111,7 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
                         });
                         vote = 0;
                     }
-                }
-                /*list = {paragraph_num: 3,
-                    datas:[
-                        {scale:1, paragraph_id:1, vote:3, color: "fill:rgb(0,255,0)"},
-                        {scale:1, paragraph_id:2, vote:7, color: "fill:rgb(255,0,0)"},
-                        {scale:1, paragraph_id:3, vote:8, color: "fill:rgb(0,0,255)"},
-                        {scale:2, paragraph_id:1, vote:3, color: "fill:rgb(0,255,0)"},
-                        {scale:2, paragraph_id:2, vote:0, color: "fill:rgb(255,0,0)"},
-                        {scale:2, paragraph_id:3, vote:2, color: "fill:rgb(0,0,255)"},
-                        {scale:3, paragraph_id:1, vote:3, color: "fill:rgb(0,255,0)"},
-                        {scale:3, paragraph_id:2, vote:11, color: "fill:rgb(255,0,0)"},
-                        {scale:3, paragraph_id:3, vote:5, color: "fill:rgb(0,0,255)"}
-                    ]
-                };*/
-                //list = [10, 30, 5, 60, 40, 78, 56, 30, 24, 80, 20, 100, 20];
+                }*/
             } else if(music_num == 1) { //rhythm
                 list.label = vm.rhythms;
                 list.datas = [];
@@ -280,6 +282,79 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
     };
 
     vm.renderBar = function(id, dataset) {
+        //console.log(dataset.datas);
+        var size = {width: 800, height:1000, margin_x:100, bar_y:270, scale: 15};
+        
+        list = dataset.datas;
+        var color_code = [
+            {R:255, G:191, B:127},
+            {R:255, G:255, B:127},
+            {R:191, G:255, B:127},
+            {R:127, G:255, B:127},
+            {R:127, G:255, B:191},
+            {R:127, G:255, B:255},
+            {R:127, G:255, B:255},
+            {R:127, G:191, B:255},
+            {R:127, G:127, B:255},
+            {R:191, G:127, B:255},
+            {R:255, G:127, B:255},
+            {R:255, G:127, B:191},
+            {R:255, G:127, B:127}
+        ];
+        var svg = d3.select(id).append("svg")
+            .attr("width", size.width).attr("height", size.height);
+        var stack = d3.layout.stack();   // 積み上げ棒グラフ
+        var dataSet = stack(list);  // データをセット
+        svg.selectAll("g")  // グループ化するので、それらを対象にする
+        .data(dataSet)
+        .enter()
+        .append("g")    // グループ追加
+        .attr("style", function(d, i){   // ここでグラフの色を設定する
+            return "fill:rgb("+color_code[i].R+","+color_code[i].G+","+color_code[i].B+")";
+        })
+        .selectAll("rect")  // 棒グラフ1つを対象にする
+        .data(function(d){ return d; }) // 1つのデータを読み込む
+        .enter()
+        .append("rect") // 棒グラフ1つ1つを生成する
+        .attr("x", function(d){  // X座標を計算
+            //return svgWidth - d.y0 - d.y;
+            return size.margin_x + d.y0 * size.scale;
+            //return i*50;
+        })
+        .attr("y", function(d, i){ // 下から積み上げるための座標を計算。上からならd.y0だけでOK
+            //return d[i].scale_id * 50;
+            return i * 50;
+            //return svgHeight - d.y0 - d.y;
+        })
+        .attr("width", function(d, i){
+            return d.y * size.scale;
+        })  // 棒グラフの横幅
+        .attr("height", function(d){    // 棒グラフの高さ
+            return 30;
+            //return d.y;
+        });
+
+        //横軸の描画
+        d3.select(id)
+        .append("rect")
+        .attr("class","axisY")
+        .attr("width", 1)
+        .attr("height", size.height)
+        .attr("transform","translate("+size.margin_x+", 0)" );
+
+        //棒のラベルを表示する
+        for(var i=0; i<dataset.label.length; i++) {
+            d3.select(id)
+            .append("text")
+            .attr("x", 30)
+            .attr("y", 50 * i + 20)
+            .attr("width", 100)
+            .attr("height", size.height)
+            .text(dataset.label[i].name);
+        }
+    };
+
+    vm.renderBar_old = function(id, dataset) {
         var size = {width: 1100, height:300, bar_x:80, bar_y:270, scale: 15};
         /*var svg = d3.select(id).append("svg")
         .attr("width", size.width)
