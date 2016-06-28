@@ -20,3 +20,20 @@ block content
                             svg(ng-attr-id="{{heading.id}}" style="width:300; height:300;")
                     //小説と音楽
                     div(ng-show="vm.selected==1")
+                        .col-sm-10
+                            div(class="btn-group")
+                                div(class="btn-group")
+                                    button(class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true") Novels 
+                                        span(class="caret")
+                                    ul(class="dropdown-menu" aria-labelledby="dropdownMenu1")
+                                        li(ng-repeat="novel in vm.novels")
+                                            a(ng-click="vm.setNovelMusicState($index, vm.novel_music_state.music)") {{novel.title}}
+                                div(class="btn-group")
+                                    button(class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true") Music 
+                                        span(class="caret")
+                                    ul(class="dropdown-menu" aria-labelledby="dropdownMenu2")
+                                        li(ng-repeat="parameter in vm.music_parameter")
+                                            a(ng-click="vm.setNovelMusicState(vm.novel_music_state.novel, $index)") {{parameter}}
+                            .page-header
+                                h4 {{vm.novels[vm.novel_music_state.novel].title}} / {{vm.music_parameter[vm.novel_music_state.music]}}
+                        svg(id="novel_music" style="width:1100; height:300; overflow:scroll;")
