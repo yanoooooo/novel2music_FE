@@ -6,6 +6,7 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
         vm.novels = [];
         vm.scales = [];
         vm.rhythms = [];
+        vm.times = [];
         vm.selected = 0;
         vm.selectMenu(0);
         vm.getUser(); //0
@@ -35,11 +36,13 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
         urls.push(common.API_HOST + common.API_NOVEL);
         urls.push(common.API_HOST + common.API_SCALE);
         urls.push(common.API_HOST + common.API_RHYTHM);
+        urls.push(common.API_HOST + common.API_TIME);
         var promise = crudPrvd.getArray(urls);
         var successCallback = function(response) {
             vm.novels = response[0].data.datas;
             vm.scales = response[1].data.datas;
             vm.rhythms = response[2].data.datas;
+            vm.times = response[3].data.datas;
             //console.dir(vm.novels);
             vm.formattedNovelMusic(vm.novel_music_state.novel, vm.novel_music_state.music_num);
         };
@@ -66,7 +69,7 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
             {R:255, G:127, B:127}
         ];
         var graph_id = "#novel_music";
-        d3.select(graph_id).selectAll("svg").remove();
+        vm.clearGraph(graph_id);
         var url = common.API_HOST + common.API_RELATION_NOVEL + "?novel_id="+(novel_num+1);
         var promise = crudPrvd.get(url);
         var successCallback = function(response) {
@@ -77,13 +80,14 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
             var list = {};
             list.paragraph_num = Math.max.apply(Math, data.map(function(o){return o.paragraph_id;}));
             list.datas = [];
+            var vote = 0;
+            var group = [];
+            var i, j, k;
             if(music_num === 0) { //scale
                 list.label = vm.scales;
-                var vote = 0;
-                var group = [];
-                for(var i=0; i<list.paragraph_num; i++) {
-                    for(var j=0; j<vm.scales.length; j++) {
-                        for(var k=0; k<data.length; k++) {
+                for(i=0; i<list.paragraph_num; i++) {
+                    for(j=0; j<vm.scales.length; j++) {
+                        for(k=0; k<data.length; k++) {
                             if(data[k].scale_id == vm.scales[j].id && data[k].paragraph_id == i+1) {
                                 vote++;
                             }
@@ -113,10 +117,37 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
                     }
                 }*/
             } else if(music_num == 1) { //rhythm
-                list.label = vm.rhythms;
-                list.datas = [];
+                //var reduce_rhythms = vm.rhythms.slice(1);
+                var reduce_rhythms = vm.rhythms;
+                list.label = reduce_rhythms;
+                for(i=0; i<list.paragraph_num; i++) {
+                    for(j=0; j<reduce_rhythms.length; j++) {
+                        for(k=0; k<data.length; k++) {
+                            if(data[k].rhythm_id == reduce_rhythms[j].id && data[k].paragraph_id == i+1) {
+                                vote++;
+                            }
+                        }
+                        group.push({x: reduce_rhythms[j].id, y: vote});
+                        vote = 0;
+                    }
+                    list.datas.push(group);
+                    group = [];
+                }
             } else if(music_num == 2) { //time
-                list = [10, 30, 5];
+                list.label = vm.times;
+                for(i=0; i<list.paragraph_num; i++) {
+                    for(j=0; j<vm.times.length; j++) {
+                        for(k=0; k<data.length; k++) {
+                            if(data[k].time_id == vm.times[j].id && data[k].paragraph_id == i+1) {
+                                vote++;
+                            }
+                        }
+                        group.push({x: vm.times[j].id, y: vote});
+                        vote = 0;
+                    }
+                    list.datas.push(group);
+                    group = [];
+                }
             }
             vm.renderBar(graph_id, list);
         };
@@ -232,14 +263,15 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
                 }
             }
             vm.renderPie("#questionnaire_4", q4);
-
-
-            console.dir(response);
         };
         var errorCallback = function(response) {
             console.dir(response);
         };
         promise.then(successCallback, errorCallback);
+    };
+
+    vm.clearGraph = function(graph_id) {
+        d3.select(graph_id).selectAll("svg").remove();
     };
 
     vm.renderPie = function(id, dataset) {
@@ -287,55 +319,69 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
         
         list = dataset.datas;
         var color_code = [
-            {R:255, G:191, B:127},
-            {R:255, G:255, B:127},
-            {R:191, G:255, B:127},
-            {R:127, G:255, B:127},
-            {R:127, G:255, B:191},
-            {R:127, G:255, B:255},
-            {R:127, G:255, B:255},
-            {R:127, G:191, B:255},
-            {R:127, G:127, B:255},
-            {R:191, G:127, B:255},
-            {R:255, G:127, B:255},
-            {R:255, G:127, B:191},
-            {R:255, G:127, B:127}
+            "rgb(255, 191, 127)",
+            "rgb(255, 255, 127)",
+            "rgb(191, 255, 127)",
+            "rgb(127, 255, 127)",
+            "rgb(127, 255, 191)",
+            "rgb(127, 255, 255)",
+            "rgb(127, 191, 255)",
+            "rgb(127, 127, 255)",
+            "rgb(191, 127, 255)",
+            "rgb(255, 127, 255)",
+            "rgb(255, 127, 191)",
+            "rgb(255, 127, 127)"
         ];
         var svg = d3.select(id).append("svg")
             .attr("width", size.width).attr("height", size.height);
         var stack = d3.layout.stack();   // 積み上げ棒グラフ
         var dataSet = stack(list);  // データをセット
         svg.selectAll("g")  // グループ化するので、それらを対象にする
-        .data(dataSet)
-        .enter()
-        .append("g")    // グループ追加
-        .attr("style", function(d, i){   // ここでグラフの色を設定する
-            return "fill:rgb("+color_code[i].R+","+color_code[i].G+","+color_code[i].B+")";
-        })
-        .selectAll("rect")  // 棒グラフ1つを対象にする
-        .data(function(d){ return d; }) // 1つのデータを読み込む
-        .enter()
-        .append("rect") // 棒グラフ1つ1つを生成する
-        .attr("x", function(d){  // X座標を計算
-            //return svgWidth - d.y0 - d.y;
-            return size.margin_x + d.y0 * size.scale;
-            //return i*50;
-        })
-        .attr("y", function(d, i){ // 下から積み上げるための座標を計算。上からならd.y0だけでOK
-            //return d[i].scale_id * 50;
-            return i * 50;
-            //return svgHeight - d.y0 - d.y;
-        })
-        .attr("width", function(d, i){
-            return d.y * size.scale;
-        })  // 棒グラフの横幅
-        .attr("height", function(d){    // 棒グラフの高さ
-            return 30;
-            //return d.y;
-        });
+            .data(dataSet)
+            .enter()
+            .append("g")    // グループ追加
+            .attr("style", function(d, i){   // ここでグラフの色を設定する
+                return "fill:"+color_code[i];
+            })
+            .selectAll("rect")  // 棒グラフ1つを対象にする
+            .data(function(d){ return d; }) // 1つのデータを読み込む
+            .enter()
+            .append("rect") // 棒グラフ1つ1つを生成する
+            .attr("x", function(d){  // X座標を計算
+                return size.margin_x + d.y0 * size.scale;
+            })
+            .attr("y", function(d, i){ // 下から積み上げるための座標を計算。上からならd.y0だけでOK
+                return i * 50;
+            })
+            .attr("width", function(d, i){
+                return d.y * size.scale;
+            })  // 棒グラフの横幅
+            .attr("height", function(d){    // 棒グラフの高さ
+                return 30;
+                //return d.y;
+            });
+
+        //棒グラフの数値を描画する
+        var i=0;
+        var j=0;
+        for(i=0; i<list.length; i++) {
+            for(j=0; j<list[i].length; j++) {
+                if(list[i][j].y !== 0) {
+                    svg
+                    .append("text")          //text要素を追加
+                    //.attr("class ","barNum")  //CSSクラスを指定
+                    .attr("x", size.margin_x + list[i][j].y0 * size.scale)
+                    .attr("y", list[i][j].x * 50 - 15)//Ｙ座標を指定
+                    //.attr("width", size.width)
+                    //.attr("height", size.height)
+                    //.attr("transform","translate(1000, 0)" )
+                    .text(list[i][j].y);
+                }
+            }
+        }
 
         //横軸の描画
-        d3.select(id)
+        svg
         .append("rect")
         .attr("class","axisY")
         .attr("width", 1)
@@ -343,8 +389,8 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
         .attr("transform","translate("+size.margin_x+", 0)" );
 
         //棒のラベルを表示する
-        for(var i=0; i<dataset.label.length; i++) {
-            d3.select(id)
+        for(i=0; i<dataset.label.length; i++) {
+            svg
             .append("text")
             .attr("x", 30)
             .attr("y", 50 * i + 20)
@@ -352,104 +398,31 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
             .attr("height", size.height)
             .text(dataset.label[i].name);
         }
-    };
 
-    vm.renderBar_old = function(id, dataset) {
-        var size = {width: 1100, height:300, bar_x:80, bar_y:270, scale: 15};
-        /*var svg = d3.select(id).append("svg")
-        .attr("width", size.width)
-        .attr("height", size.height)
-        .append("g")
-        .attr("transform", "translate(" + size.width / 2 + "," + size.height / 2 + ")");*/
+        //legend
+        //http://shimz.me/blog/d3-js/4411
+        //カテゴリ
+        var category = [];
+        for(i=0; i<dataset.datas.length; i++) {
+            category.push("第"+(i+1)+"段落");
+        }
+         
+        //カラースケールをオリジナルスケールとして指定する
+        var colorScale = d3.scale.ordinal()
+            .domain(category)   //カテゴリを指定
+            .range(color_code);
+        //凡例を表示するグループ要素 
+        svg.append('g')
+            .attr('class', 'legendLinear')
+            .attr("transform", "translate("+(size.width-100)+",20)");
 
-
-        var svg = d3.select(id).append("svg")
-        .attr("width", size.width)
-        .attr("height", size.height)
-        .selectAll("rect")  // SVGでの四角形を示す要素を指定
-        .data(dataset.datas); // データを設定
-        
-        svg.enter()
-        .append("rect") // SVGでの四角形を示す要素を生成
-        .attr("x", function(d, i){   // X座標を配列の順序に応じて計算
-            return i * size.bar_x / dataset.paragraph_num;
-        })
-        .attr("y", function(d){ // 縦幅を配列の内容に応じて計算
-            return size.bar_y-(d.vote*size.scale) +"px";
-        })
-        .attr("height", function(d){    // 縦幅を配列の内容に応じて計算
-            return (d.vote*size.scale) +"px";
-        })
-        .attr("width", (size.bar_x / dataset.paragraph_num) -5)  // 棒グラフの横幅を指定
-        .attr("style", function(d) {
-            return d.color;
-        }); // 棒グラフの色を設定
-
-        //棒グラフの数値を描画する
-        svg.enter()              //text要素を指定
-        .append("text")          //text要素を追加
-        .attr("class","barNum")  //CSSクラスを指定
-        .attr("x",function(d,i){ //Ｘ座標を指定
-            return (i * size.bar_x / dataset.paragraph_num)+ 2 +"px";  //棒グラフの表示間隔に合わせる
-        })
-        .attr("y", size.height - 30)//Ｙ座標を指定
-        .text(function(d){     //データを表示
-            return d.vote;
-        });
-
-        //目盛り表示の為の縮尺表示
-        var maxNum = 300;
-        var yScale = d3.scale.linear()
-                    .domain([0,maxNum])
-                    .range([maxNum,0]);
-
-        d3.select(id)
-        .append("g")
-        .attr("class","axis")
-        .attr("transform", "translate(1, " + (size.height - 300) + ")")
-        .call(
-            d3.svg.axis()
-            .scale(yScale)
-            .orient("left")
-            
-            /*.ticks(20)
-            .tickValues( [10.50,30.36,50,100,200,300] )
-            .tickFormat(d3.format(".2f"))*/
-        );
-
-        //横軸の描画
-        d3.select(id)
-        .append("rect")
-        .attr("class","axisX")
-        .attr("width", size.width)
-        .attr("height", 1)
-        .attr("transform","translate(0, " + (size.height - 30 ) + ")" );
-     
-        //棒のラベルを表示する
-        svg.enter()
-        .append("text")
-        .attr("class","barName")
-        .attr("x",function(d,i){
-            return i * size.bar_x;
-        })
-        .attr("y", size.height - 15)
-     
-        /*
-            下記のコードは、ラベルはtext要素を追加することで表示します。
-            棒グラフ内にデータを表示します。今回のデータセットには、
-            データ内にラベル名の情報は含まれていません。
-            以下のようにすると、配列に表示するラベルの文字を格納しておき
-            順場に応じて返すようにします。
-        */
-        .text(function(d,i){
-            if(dataset.label.length > i) {
-                return dataset.label[i].name;
-            } else {
-                return "";
-            }
-            //return ["A","B","C","D","E","F","G","H","I"][i];
-        });
-
-
+        //スケールを元に凡例を生成する
+        var legendLinear = d3.legend.color()
+            .shapeWidth(30)
+            .scale(colorScale);
+         
+        //凡例を描画する
+        svg.select('.legendLinear')
+            .call(legendLinear);
     };
 });
