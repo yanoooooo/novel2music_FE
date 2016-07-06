@@ -9,6 +9,7 @@ block content
                     div(class="btn-group-vertical" role="group" aria-label="side_menu")
                         button(type="button" class="btn btn-default" ng-click="vm.selectMenu(0)") ユーザ属性
                         button(type="button" class="btn btn-default" ng-click="vm.selectMenu(1)") 小説と音楽
+                        button(type="button" class="btn btn-default" ng-click="vm.selectMenu(2)") 単語と音楽
                 .col-sm-10
                     h1 {{vm.graph_title}}
                     p {{vm.sentence}}
@@ -36,4 +37,23 @@ block content
                                             a(ng-click="vm.setNovelMusicState(vm.novel_music_state.novel, $index)") {{parameter}}
                             .page-header
                                 h4 {{vm.novels[vm.novel_music_state.novel].title}} / {{vm.music_parameter[vm.novel_music_state.music]}}
-                        svg(id="novel_music" style="width:800; height:1000; overflow:scroll;")
+                        svg(id="novel_music" style="width:800; height:2000; overflow:scroll;")
+                    //単語と音楽
+                    div(ng-show="vm.selected==2")
+                        .col-sm-10
+                            div(class="btn-group")
+                                div(class="btn-group")
+                                    button(class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true") Novels 
+                                        span(class="caret")
+                                    ul(class="dropdown-menu" aria-labelledby="dropdownMenu1")
+                                        li(ng-repeat="novel in vm.novels")
+                                            a(ng-click="vm.setTermMusicState($index, vm.term_music_state.music)") {{novel.title}}
+                                div(class="btn-group")
+                                    button(class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true") Music 
+                                        span(class="caret")
+                                    ul(class="dropdown-menu" aria-labelledby="dropdownMenu2")
+                                        li(ng-repeat="parameter in vm.music_parameter")
+                                            a(ng-click="vm.setTermMusicState(vm.term_music_state.novel, $index)") {{parameter}}
+                            .page-header
+                                h4 {{vm.novels[vm.term_music_state.novel].title}} / {{vm.music_parameter[vm.term_music_state.music]}}
+                        svg(id="term_music" style="width:800; height:2000; overflow:scroll;")

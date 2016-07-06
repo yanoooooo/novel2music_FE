@@ -9,29 +9,6 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
         vm.times = [];
         vm.selected = 0;
         vm.selectMenu(0);
-        vm.getUser(); //0
-        vm.getNovelMusic(); //1
-    };
-
-    vm.selectMenu = function(id) {
-        if(id === 0) {
-            vm.selected = 0;
-            vm.graph_title = "ユーザ属性";
-            vm.sentence = "ユーザ登録のみの被験者は除外している";
-        } else if(id == 1) {
-            vm.selected = 1;
-            vm.graph_title = "小説と音楽";
-            vm.sentence = "小説と音楽の相関関係について。その得票数など。";
-        }
-    };
-
-    vm.setNovelMusicState = function(novel_num, music_num) {
-        vm.novel_music_state = {novel: novel_num, music: music_num};
-        vm.formattedNovelMusic(vm.novel_music_state.novel, vm.novel_music_state.music);
-    };
-
-    vm.getNovelMusic = function() {
-        vm.novel_music_state = {novel: 0, music: 0};
         var urls = [];
         urls.push(common.API_HOST + common.API_NOVEL);
         urls.push(common.API_HOST + common.API_SCALE);
@@ -44,7 +21,9 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
             vm.rhythms = response[2].data.datas;
             vm.times = response[3].data.datas;
             //console.dir(vm.novels);
-            vm.formattedNovelMusic(vm.novel_music_state.novel, vm.novel_music_state.music_num);
+            vm.getUser(); //0
+            vm.setNovelMusicState(0, 0); //1
+            vm.setTermMusicState(0, 0); //2
         };
         var errorCallback = function(response) {
             console.dir(response);
@@ -52,22 +31,141 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
         promise.then(successCallback, errorCallback);
     };
 
+    vm.selectMenu = function(id) {
+        if(id === 0) {
+            vm.selected = 0;
+            vm.graph_title = "ユーザ属性";
+            vm.sentence = "ユーザ登録のみの被験者は除外している";
+        } else if(id == 1) {
+            vm.selected = 1;
+            vm.graph_title = "小説と音楽";
+            vm.sentence = "小説と音楽の相関関係について。その得票数など。";
+        } else if(id == 2) {
+            vm.selected = 2;
+            vm.graph_title = "単語と音楽";
+            vm.sentence = "単語と音楽の相関関係について。その得票数など。";
+        }
+    };
+
+    vm.setTermMusicState = function(novel_num, music_num) {
+        vm.term_music_state = {novel: novel_num, music: music_num};
+        vm.formattedTermMusic(vm.term_music_state.novel, vm.term_music_state.music);
+    };
+
+    vm.formattedTermMusic = function(novel_num, music_num) {
+        var graph_id = "#term_music";
+        vm.clearGraph(graph_id);
+        var url = common.API_HOST + common.API_RELATION_TERM + "?novel_id="+(novel_num+1);
+        var promise = crudPrvd.get(url);
+        var successCallback = function(response) {
+            if(response.data.datas.length === 0) {
+                return;
+            }
+            var data = response.data.datas;
+            var list = {};
+            list.datas = [];
+            var vote = 0;
+            var group = [];
+            var i, j, k;
+            var label_pre = [];
+            //ラベルの作成
+            for(i=0; i<data.length; i++) {
+                label_pre.push(data[i].paragraph_id+":"+data[i].term);
+            }
+            label_pre = label_pre.filter(function (x, i, self) {
+                return self.indexOf(x) === i;
+            });
+            label_pre.sort(function(a, b) {
+                if(a<b) return -1;
+                if(a>b) return 1;
+                return 0;
+            });
+            var label = [];
+            var name = "";
+            for(i=0; i<label_pre.length; i++) {
+                for(j=0; j<data.length; j++) {
+                    name = data[j].paragraph_id+":"+data[j].term;
+                    if(label_pre[i] == name) {
+                        label.push({name: name, term_id: data[j].term_id});
+                        break;
+                    }
+                }
+            }
+            list.label = label;
+
+            if(music_num === 0) { //scale
+                for(i=0; i<vm.scales.length; i++) {
+                    for(j=0; j<label_pre.length; j++) {
+                        for(k=0; k<data.length; k++) {
+                            name = data[k].paragraph_id+":"+data[k].term;
+                            if(data[k].scale_id == vm.scales[i].id && name == label_pre[j]) {
+                                vote++;
+                            }
+                        }
+                        group.push({x: j+1, y: vote});
+                        vote = 0;
+                    }
+                    list.datas.push(group);
+                    group = [];
+                }
+                list.legend = [];
+                for(i=0; i<vm.scales.length; i++) {
+                    list.legend.push(vm.scales[i].name);
+                }
+            } else if(music_num == 1) { //rhythm
+                for(i=0; i<vm.rhythms.length; i++) {
+                    for(j=0; j<label_pre.length; j++) {
+                        for(k=0; k<data.length; k++) {
+                            name = data[k].paragraph_id+":"+data[k].term;
+                            if(data[k].rhythm_id == vm.rhythms[i].id && name == label_pre[j]) {
+                                vote++;
+                            }
+                        }
+                        group.push({x: j+1, y: vote});
+                        vote = 0;
+                    }
+                    list.datas.push(group);
+                    group = [];
+                }
+                list.legend = [];
+                for(i=0; i<vm.rhythms.length; i++) {
+                    list.legend.push(vm.rhythms[i].name);
+                }
+            } else if(music_num == 2) { //time
+                for(i=0; i<vm.times.length; i++) {
+                    for(j=0; j<label_pre.length; j++) {
+                        for(k=0; k<data.length; k++) {
+                            name = data[k].paragraph_id+":"+data[k].term;
+                            if(data[k].time_id == vm.times[i].id && name == label_pre[j]) {
+                                vote++;
+                            }
+                        }
+                        group.push({x: j+1, y: vote});
+                        vote = 0;
+                    }
+                    list.datas.push(group);
+                    group = [];
+                }
+                list.legend = [];
+                for(i=0; i<vm.times.length; i++) {
+                    list.legend.push(vm.times[i].name);
+                }
+            }
+            
+            vm.renderBar(graph_id, list);
+        };
+        var errorCallback = function(response) {
+            console.dir(response);
+        };
+        promise.then(successCallback, errorCallback);
+    };
+
+    vm.setNovelMusicState = function(novel_num, music_num) {
+        vm.novel_music_state = {novel: novel_num, music: music_num};
+        vm.formattedNovelMusic(vm.novel_music_state.novel, vm.novel_music_state.music);
+    };
+
     vm.formattedNovelMusic = function(novel_num, music_num) {
-        var color_code = [
-            {R:255, G:191, B:127},
-            {R:255, G:255, B:127},
-            {R:191, G:255, B:127},
-            {R:127, G:255, B:127},
-            {R:127, G:255, B:191},
-            {R:127, G:255, B:255},
-            {R:127, G:255, B:255},
-            {R:127, G:191, B:255},
-            {R:127, G:127, B:255},
-            {R:191, G:127, B:255},
-            {R:255, G:127, B:255},
-            {R:255, G:127, B:191},
-            {R:255, G:127, B:127}
-        ];
         var graph_id = "#novel_music";
         vm.clearGraph(graph_id);
         var url = common.API_HOST + common.API_RELATION_NOVEL + "?novel_id="+(novel_num+1);
@@ -148,6 +246,11 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
                     list.datas.push(group);
                     group = [];
                 }
+            }
+            //カテゴリ
+            list.legend = [];
+            for(i=0; i<list.paragraph_num; i++) {
+                list.legend.push("第"+(i+1)+"段落");
             }
             vm.renderBar(graph_id, list);
         };
@@ -315,7 +418,7 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
 
     vm.renderBar = function(id, dataset) {
         //console.log(dataset.datas);
-        var size = {width: 800, height:1000, margin_x:100, bar_y:270, scale: 15};
+        var size = {width: 800, height:2000, margin_x:100, bar_y:270, scale: 15};
         
         list = dataset.datas;
         var color_code = [
@@ -330,7 +433,8 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
             "rgb(191, 127, 255)",
             "rgb(255, 127, 255)",
             "rgb(255, 127, 191)",
-            "rgb(255, 127, 127)"
+            "rgb(255, 127, 127)",
+            "rgb(191, 127, 127)",
         ];
         var svg = d3.select(id).append("svg")
             .attr("width", size.width).attr("height", size.height);
@@ -401,15 +505,10 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
 
         //legend
         //http://shimz.me/blog/d3-js/4411
-        //カテゴリ
-        var category = [];
-        for(i=0; i<dataset.datas.length; i++) {
-            category.push("第"+(i+1)+"段落");
-        }
-         
+        
         //カラースケールをオリジナルスケールとして指定する
         var colorScale = d3.scale.ordinal()
-            .domain(category)   //カテゴリを指定
+            .domain(dataset.legend)   //カテゴリを指定
             .range(color_code);
         //凡例を表示するグループ要素 
         svg.append('g')
