@@ -24,6 +24,7 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
             vm.getUser(); //0
             vm.setNovelMusicState(0, 0); //1
             vm.setTermMusicState(0, 0); //2
+            vm.setUserMusicState(0, 0); //3
         };
         var errorCallback = function(response) {
             console.dir(response);
@@ -44,7 +45,105 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
             vm.selected = 2;
             vm.graph_title = "単語と音楽";
             vm.sentence = "単語と音楽の相関関係について。その得票数など。";
+        } else if(id == 3) {
+            vm.selected = 3;
+            vm.graph_title = "ユーザと音楽";
+            vm.sentence = "ユーザと音楽の相関関係について。その得票数など。";
         }
+    };
+
+    vm.setUserMusicState = function (novel_num, music_num) {
+        vm.user_music_state = {novel: novel_num, music: music_num};
+        vm.formattedUserMusic(vm.user_music_state.novel, vm.user_music_state.music);
+    };
+
+    vm.formattedUserMusic = function(novel_num, music_num) {
+        var graph_id = "#user_music";
+        vm.clearGraph(graph_id);
+        var url = [];
+        url.push(common.API_HOST + common.API_USER);
+        url.push(common.API_HOST + common.API_RELATION_NOVEL + "?novel_id="+(novel_num+1));
+        var promise = crudPrvd.getArray(url);
+        var successCallback = function(response) {
+            if(response[1].data.datas.length === 0) {
+                return;
+            }
+            var users = response[0].data.datas;
+            var data = response[1].data.datas;
+            var list = {};
+            list.datas = [];
+            var vote = 0;
+            var group = [];
+            var i, j, k;
+            //ラベルの作成
+            var label = [];
+            for(i=0; i<users.length; i++) {
+                label.push({name:"user" + users[i].id});
+            }
+            console.log(label);
+            list.label = label;
+            if(music_num === 0) { //scale
+                for(i=0; i<vm.scales.length; i++) {
+                    for(j=0; j<users.length; j++) {
+                        for(k=0; k<data.length; k++) {
+                            if(data[k].scale_id == vm.scales[i].id && data[k].user_id == users[j].id) {
+                                vote++;
+                            }
+                        }
+                        group.push({x: j+1, y: vote});
+                        vote = 0;
+                    }
+                    list.datas.push(group);
+                    group = [];
+                }
+                list.legend = [];
+                for(i=0; i<vm.scales.length; i++) {
+                    list.legend.push(vm.scales[i].name);
+                }
+            } else if(music_num == 1) { //rhythm
+                for(i=0; i<vm.rhythms.length; i++) {
+                    for(j=0; j<users.length; j++) {
+                        for(k=0; k<data.length; k++) {
+                            if(data[k].rhythm_id == vm.rhythms[i].id && data[k].user_id == users[j].id) {
+                                vote++;
+                            }
+                        }
+                        group.push({x: j+1, y: vote});
+                        vote = 0;
+                    }
+                    list.datas.push(group);
+                    group = [];
+                }
+                list.legend = [];
+                for(i=0; i<vm.rhythms.length; i++) {
+                    list.legend.push(vm.rhythms[i].name);
+                }
+            } else if(music_num == 2) { //time
+                for(i=0; i<vm.times.length; i++) {
+                    for(j=0; j<users.length; j++) {
+                        for(k=0; k<data.length; k++) {
+                            if(data[k].time_id == vm.times[i].id && data[k].user_id == users[j].id) {
+                                vote++;
+                            }
+                        }
+                        group.push({x: j+1, y: vote});
+                        vote = 0;
+                    }
+                    list.datas.push(group);
+                    group = [];
+                }
+                list.legend = [];
+                for(i=0; i<vm.times.length; i++) {
+                    list.legend.push(vm.times[i].name);
+                }
+            }
+            vm.renderBar(graph_id, list);
+        };
+
+        var errorCallback = function(response) {
+            console.dir(response);
+        };
+        promise.then(successCallback, errorCallback);
     };
 
     vm.setTermMusicState = function(novel_num, music_num) {
