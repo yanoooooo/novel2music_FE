@@ -1,0 +1,31 @@
+extends ../layout
+
+block content
+    h1= title
+    div(class="panel panel-default" ng-controller="explainCtrl as vm" ng-init="vm.init('#{user}')")
+        div(class="panel-body")
+            | 登録されている物語の一覧です
+            br
+            br
+            div(class="panel panel-default")
+                .panel-heading
+                    Panel 小説一覧
+                table.table
+                    thread
+                        tr
+                            th タイトル
+                            th 年代
+                            th 著者
+                            th カテゴリ
+                    tbody
+                        tr(ng-repeat="novel in vm.novel")
+                            td
+                                a(ng-show="!vm.isAnswerd(novel.id)" href="/novel/read/{{novel.id}}")
+                                    {{novel.title}}
+                                div(ng-show="vm.isAnswerd(novel.id)")
+                                    {{novel.title}}
+                            td
+                                div(ng-if="novel.chronology==0") 不明
+                                div(ng-if="novel.chronology!=0") {{novel.chronology}}
+                            td {{novel.author_name}}
+                            td {{novel.category_name}}
