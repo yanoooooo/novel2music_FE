@@ -44,6 +44,7 @@ var sessionCheck = function(req, res, next) {
 app.use('/', require('./routes/login'));
 app.use('/questionnaire', sessionCheck, require('./routes/questionnaire'));
 app.use('/result', sessionCheck, require('./routes/result'));
+app.use('/novel', sessionCheck, require('./routes/novel'));
 //app.use('/users', users);
 
 // catch 404 and forward to error handler
