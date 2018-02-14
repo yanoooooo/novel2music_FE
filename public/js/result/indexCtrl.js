@@ -71,6 +71,7 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
             var users = response[0].data.datas;
             var data = response[1].data.datas;
             var list = {};
+            list.paragraph_num = Math.max.apply(Math, data.map(function(o){return o.paragraph_id;}));
             list.datas = [];
             var vote = 0;
             var group = [];
@@ -80,9 +81,24 @@ angular.module("novel2music").controller('resultIndexCtrl', function resultIndex
             for(i=0; i<users.length; i++) {
                 label.push({name:"user" + users[i].id});
             }
-            console.log(label);
+            //console.log(label);
             list.label = label;
+            //console.dir(data);
+            var num = 1;
             if(music_num === 0) { //scale
+                /*for(i=0; i<vm.scales.length; i++) {
+                    for(j=0; j<users.length; j++) {
+                        for(k=0; k<data.length; k++) {
+                            if(data[k].scale_id == vm.scales[i].id && data[k].user_id == users[j].id) {
+                                vote++;
+                            }
+                        }
+                        group.push({x: j+1, y: vote});
+                        vote = 0;
+                    }
+                    list.datas.push(group);
+                    group = [];
+                }*/
                 for(i=0; i<vm.scales.length; i++) {
                     for(j=0; j<users.length; j++) {
                         for(k=0; k<data.length; k++) {

@@ -9,6 +9,9 @@ block content
                     b authored by {{vm.novel.author_name}}
             div(ng-repeat="paragraph in vm.novel.paragraph")
                 p(ng-bind-html="paragraph.sentence")
+                | **
+                br
+                br
             //p(ng-bind-html="vm.novel.paragraph[vm.paragraph_num-1].sentence")
             br
             a(href="/novel")
