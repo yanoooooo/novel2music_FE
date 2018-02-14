@@ -67,13 +67,13 @@ block content
                                         span(class="caret")
                                     ul(class="dropdown-menu" aria-labelledby="dropdownMenu1")
                                         li(ng-repeat="novel in vm.novels")
-                                            a(ng-click="vm.setUserMusicState($index, vm.term_music_state.music)") {{novel.title}}
+                                            a(ng-click="vm.setUserMusicState($index, vm.user_music_state.music)") {{novel.title}}
                                 div(class="btn-group")
                                     button(class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true") Music 
                                         span(class="caret")
                                     ul(class="dropdown-menu" aria-labelledby="dropdownMenu2")
                                         li(ng-repeat="parameter in vm.music_parameter")
-                                            a(ng-click="vm.setUserMusicState(vm.term_music_state.novel, $index)") {{parameter}}
+                                            a(ng-click="vm.setUserMusicState(vm.user_music_state.novel, $index)") {{parameter}}
                             .page-header
                                 h4 {{vm.novels[vm.user_music_state.novel].title}} / {{vm.music_parameter[vm.user_music_state.music]}}
                         svg(id="user_music" style="width:800; height:2000; overflow:scroll;")

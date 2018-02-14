@@ -1,0 +1,20 @@
+extends ../layout
+
+block content
+    div(ng-controller="novelCtrl as vm" ng-init="vm.init(#{id})")
+        div(ng-show="!vm.is_confirm")
+            .page-header
+                h1 {{vm.novel.title}}
+                p
+                    b authored by {{vm.novel.author_name}}
+            div(ng-repeat="paragraph in vm.novel.paragraph")
+                p(ng-bind-html="paragraph.sentence")
+                | **
+                br
+                br
+            //p(ng-bind-html="vm.novel.paragraph[vm.paragraph_num-1].sentence")
+            br
+            a(href="/novel")
+                button(class="btn btn-warning" role="button") 小説一覧に戻る
+            br
+            br
